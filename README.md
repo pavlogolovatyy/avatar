@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Avatar
 
-## Getting Started
+> Gradient avatars by URL. Drop any name, email, or string into the path and get a unique, deterministic avatar back in PNG or SVG.
 
-First, run the development server:
+Live: **[avatar.pavlo.sh](https://avatar.pavlo.sh)**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Why
+
+Most apps still ship a grey silhouette where a user's face should be. Avatar replaces that placeholder in one line of HTML. No editor, no signup, no asset pipeline. Every string maps to the same gradient forever, so the same user always gets the same avatar across your app, your emails, and your docs.
+
+## Quick start
+
+```html
+<img src="https://avatar.pavlo.sh/anyname" width="180" height="180" />
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Works with anything: usernames, emails, IDs, slugs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## URL patterns
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| URL                                         | Result                                  |
+| ------------------------------------------- | --------------------------------------- |
+| `/<seed>`                                   | PNG, 180×180                            |
+| `/<seed>?size=N`                            | PNG, `N×N` (clamped to `16–1024`)       |
+| `/<seed>?rounded=N`                         | PNG with `N` px border-radius           |
+| `/<seed>?size=120&rounded=60`               | PNG, full circle at custom size         |
+| `/<seed>.svg`                               | SVG instead of PNG (same `size`/`rounded` rules) |
 
-## Learn More
+A few live examples:
 
-To learn more about Next.js, take a look at the following resources:
+- `https://avatar.pavlo.sh/ada`
+- `https://avatar.pavlo.sh/marco@example.com?rounded=90`
+- `https://avatar.pavlo.sh/team-1?size=320`
+- `https://avatar.pavlo.sh/notification-bot.svg`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Parameters
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Param     | Type    | Default | Range          | Notes                                            |
+| --------- | ------- | ------- | -------------- | ------------------------------------------------ |
+| `size`    | integer | `180`   | `16–1024`      | Square edge in pixels                            |
+| `rounded` | integer | `0`     | `0 – size/2`   | Border-radius in pixels. `size/2` = full circle. |
 
-## Deploy on Vercel
+Both parameters are clamped server-side, so invalid input never returns an error; it returns the closest valid avatar. Responses are pure functions of `(seed, size, rounded, format)` and ship with `Cache-Control: public, max-age=31536000, immutable`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How it works
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Seed → 32-bit FNV-1a hash → two HSL colors + an angle bucket.
+- PNG: rendered with [Next.js `ImageResponse`](https://nextjs.org/docs/app/api-reference/functions/image-response) (Satori + Resvg).
+- SVG: a hand-built `<linearGradient>` + `<rect>`, no runtime dependencies.
+
+Everything lives in two files: `lib/avatar.ts` (hash, gradient, parsing) and `app/[username]/route.tsx` (the route handler).
+
+## Local development
+
+Requires Node 20+.
+
+```bash
+npm install
+npm run dev
+# open http://localhost:3000
+```
+
+```bash
+npm run build   # production build
+npm run start   # serve the build
+npm run lint    # eslint
+```
+
+## Deployment
+
+Built on Next.js 16 (App Router, Turbopack). Deploys to Vercel without configuration; runs anywhere that supports a Node Next.js runtime.
+
+## License
+
+[MIT](./LICENSE). Free to use, fork, and self-host. A link back to the project is appreciated but not required.
+
+---
+
+Made by [Pavlo Golovatyy](https://pavlo.sh).

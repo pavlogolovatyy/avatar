@@ -1,65 +1,200 @@
-import Image from "next/image";
+const SITE_URL = "https://avatar.pavlo.sh";
+
+const examples = [
+  {
+    url: "/pavlo",
+    label: "/pavlo",
+    note: "Default 180×180 PNG",
+  },
+  {
+    url: "/pavlo?rounded=30",
+    label: "/pavlo?rounded=30",
+    note: "Rounded corners",
+  },
+  {
+    url: "/pavlo?rounded=90",
+    label: "/pavlo?rounded=90",
+    note: "Full circle (rounded ≥ size/2)",
+  },
+  {
+    url: "/pavlo?size=120",
+    label: "/pavlo?size=120",
+    note: "Custom size in px",
+  },
+  {
+    url: "/pavlo.svg",
+    label: "/pavlo.svg",
+    note: "SVG instead of PNG",
+  },
+  {
+    url: "/marco@example.com",
+    label: "/marco@example.com",
+    note: "Works with email addresses",
+  },
+];
+
+const gallery = ["pavlo", "claudia", "priya", "kenji", "noor", "lara"];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Avatar",
+  url: SITE_URL,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  description:
+    "Generate deterministic gradient avatars from any string. Free, open source, PNG or SVG, size and rounded options.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="flex flex-1 flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-zinc-100">
+        <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-16 px-6 py-20 sm:px-10">
+          <header className="flex flex-col gap-6">
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+              Gradient avatars, by URL.
+            </h1>
+            <p className="max-w-xl text-lg leading-7 text-zinc-600 dark:text-zinc-400">
+              Drop any name, email, or string into the URL. Get back a unique,
+              deterministic gradient avatar in PNG or SVG. No editor, no
+              signup, no account.
+            </p>
+            <div className="flex items-center gap-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/pavlo?rounded=90"
+                alt="Example gradient avatar for the seed 'pavlo'"
+                width={64}
+                height={64}
+                className="h-16 w-16 shrink-0"
+              />
+              <pre className="min-w-0 flex-1 overflow-x-auto text-sm">
+                <code className="font-mono">
+                  {`<img src="${SITE_URL}/anyname" />`}
+                </code>
+              </pre>
+            </div>
+          </header>
+
+          <section className="flex flex-col gap-4">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Every name gets its own gradient
+            </h2>
+            <div className="flex flex-wrap gap-6">
+              {gallery.map((seed) => (
+                <a
+                  key={seed}
+                  href={`/${seed}`}
+                  target="_blank"
+                  className="flex flex-col items-center gap-2"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/${seed}?rounded=90`}
+                    alt={`Gradient avatar for ${seed}`}
+                    width={90}
+                    height={90}
+                    className="h-[90px] w-[90px]"
+                  />
+                  <code className="text-xs text-zinc-500">/{seed}</code>
+                </a>
+              ))}
+            </div>
+            <p className="text-sm text-zinc-500">
+              Same string → same gradient. Forever.
+            </p>
+          </section>
+
+          <section className="flex flex-col gap-4">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+              URL patterns
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {examples.map((example) => (
+                <li
+                  key={example.label}
+                  className="flex items-center gap-4 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={example.url}
+                    alt={example.note}
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 shrink-0"
+                  />
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <code className="truncate font-mono text-sm">
+                      {example.label}
+                    </code>
+                    <span className="text-sm text-zinc-500">
+                      {example.note}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="flex flex-col gap-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Parameters
+            </h2>
+            <p>
+              <code className="font-mono text-zinc-900 dark:text-zinc-100">
+                size
+              </code>
+              : square edge in pixels. Default <code>180</code>, clamped to{" "}
+              <code>16–1024</code>.
+            </p>
+            <p>
+              <code className="font-mono text-zinc-900 dark:text-zinc-100">
+                rounded
+              </code>
+              : border-radius in pixels. Default <code>0</code>, clamped to{" "}
+              <code>0–size/2</code>. Use <code>rounded ≥ size/2</code> for a
+              full circle.
+            </p>
+            <p>
+              Append{" "}
+              <code className="font-mono text-zinc-900 dark:text-zinc-100">
+                .svg
+              </code>{" "}
+              to the path to get an SVG response instead of PNG.
+            </p>
+          </section>
+
+          <footer className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 border-t border-zinc-200 pt-6 text-sm text-zinc-500 dark:border-zinc-800">
+            <span>
+              by{" "}
+              <a
+                href="https://pavlo.sh"
+                className="font-medium text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-100"
+                rel="noopener noreferrer"
+              >
+                Pavlo Golovatyy
+              </a>
+            </span>
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://github.com/pavlogolovatyy/avatar"
+              className="font-medium text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-100"
+              rel="noopener noreferrer"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              View on GitHub
+            </a>
+          </footer>
+        </main>
+      </div>
+    </>
   );
 }
