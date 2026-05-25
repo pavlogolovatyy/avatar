@@ -31,6 +31,16 @@ const examples = [
     label: "/marco@example.com",
     note: "Works with email addresses",
   },
+  {
+    url: "/pavlo?variant=qr",
+    label: "/pavlo?variant=qr",
+    note: "QR-like pixel grid",
+  },
+  {
+    url: "/pavlo?variant=qr&rounded=20",
+    label: "/pavlo?variant=qr&rounded=20",
+    note: "QR variant with rounded corners",
+  },
 ];
 
 const gallery = ["pavlo", "claudia", "priya", "kenji", "noor", "lara"];
@@ -117,6 +127,35 @@ export default function Home() {
 
           <section className="flex flex-col gap-4">
             <h2 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+              Or a QR-like pixel grid
+            </h2>
+            <div className="flex flex-wrap gap-6">
+              {gallery.map((seed) => (
+                <a
+                  key={seed}
+                  href={`/${seed}?variant=qr`}
+                  target="_blank"
+                  className="flex flex-col items-center gap-2"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/${seed}?variant=qr&rounded=12`}
+                    alt={`QR-like avatar for ${seed}`}
+                    width={90}
+                    height={90}
+                    className="h-[90px] w-[90px]"
+                  />
+                  <code className="text-xs text-zinc-500">/{seed}?variant=qr</code>
+                </a>
+              ))}
+            </div>
+            <p className="text-sm text-zinc-500">
+              Same string → same pattern. Looks like a QR code, isn’t one.
+            </p>
+          </section>
+
+          <section className="flex flex-col gap-4">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
               URL patterns
             </h2>
             <ul className="flex flex-col gap-3">
@@ -171,6 +210,14 @@ export default function Home() {
                 .svg
               </code>{" "}
               to the path to get an SVG response instead of PNG.
+            </p>
+            <p>
+              <code className="font-mono text-zinc-900 dark:text-zinc-100">
+                variant
+              </code>
+              : <code>gradient</code> (default) or <code>qr</code> for a
+              QR-like 10x10 monochrome pixel grid. Purely visual, not a
+              scannable code.
             </p>
           </section>
 
